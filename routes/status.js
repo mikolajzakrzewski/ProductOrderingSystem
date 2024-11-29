@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const Status = require('../models/status');
+const { StatusCodes, ReasonPhrases } = require('http-status-codes');
 
 router.get('/', async (req, res) => {
     try {
         const statuses = await Status.fetchAll();
-        res.json(statuses);
+        res.status(StatusCodes.OK).json(statuses);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
     }
 });
 
