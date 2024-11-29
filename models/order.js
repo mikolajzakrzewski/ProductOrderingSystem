@@ -2,6 +2,7 @@ const bookshelf = require('../bookshelf');
 
 const Order = bookshelf.Model.extend({
     tableName: 'orders',
+    idAttribute: 'order_id',
     hasTimestamps: true,
     status() {
         return this.belongsTo('Status', 'status_id');
