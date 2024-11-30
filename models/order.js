@@ -8,7 +8,7 @@ const Order = bookshelf.Model.extend({
         return this.belongsTo('Status', 'status_id');
     },
     products() {
-        return this.belongsToMany('Product', 'order_products', 'order_id', 'product_id');
+        return this.belongsToMany('Product', 'order_products', 'order_id', 'product_id').withPivot(['quantity']);
     }
 });
 

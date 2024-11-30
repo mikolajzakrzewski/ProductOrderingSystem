@@ -7,8 +7,19 @@ const { StatusCodes, ReasonPhrases } = require('http-status-codes');
 
 router.get('/', async (req, res) => {
     try {
-        const orders = await Order.fetchAll();
-        res.status(StatusCodes.OK).json(orders);
+        const orders = await Order.fetchAll({
+            withRelated: ['products']
+        });
+
+        const formattedOrders = orders.map(order => ({
+            ...order.toJSON(),
+            products: order.related('products').map(product => ({
+                product_id: product.get('product_id'),
+                quantity: product.pivot.get('quantity')
+            }))
+        }));
+
+        res.status(StatusCodes.OK).json(formattedOrders);
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
     }
@@ -116,8 +127,19 @@ router.patch('/:id', async (req, res) => {
 
 router.get('/status/:id', async (req, res) => {
     try {
-        const orders = await Order.where({ status_id: req.params.id }).fetchAll();
-        res.status(StatusCodes.OK).json(orders);
+        const orders = await Order.where({ status_id: req.params.id }).fetchAll({
+            withRelated: ['products']
+        });
+
+        const formattedOrders = orders.map(order => ({
+            ...order.toJSON(),
+            products: order.related('products').map(product => ({
+                product_id: product.get('product_id'),
+                quantity: product.pivot.get('quantity')
+            }))
+        }));
+
+        res.status(StatusCodes.OK).json(formattedOrders);
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR);
     }
