@@ -12,4 +12,4 @@ const OrderProduct = bookshelf.Model.extend({
     }
 });
 
-module.exports = OrderProduct;
+module.exports = bookshelf.model('OrderProduct', OrderProduct);

@@ -12,4 +12,4 @@ const Order = bookshelf.Model.extend({
     }
 });
 
-module.exports = Order;
+module.exports = bookshelf.model('Order', Order);

@@ -9,4 +9,4 @@ const Status = bookshelf.Model.extend({
     }
 });
 
-module.exports = Status;
+module.exports = bookshelf.model('Status', Status);

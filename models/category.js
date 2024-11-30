@@ -9,4 +9,4 @@ const Category = bookshelf.Model.extend({
     }
 });
 
-module.exports = Category;
+module.exports = bookshelf.model('Category', Category);
