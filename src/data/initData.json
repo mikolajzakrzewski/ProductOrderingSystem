@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Komputer gamingowy",
+    "description": "Komputer do gier, bardzo mocny i wydajny",
+    "unitPrice": 19.99,
+    "unitWeight": 15.5,
+    "categoryId": 1
+  },
+  {
+    "name": "Poradnik użytkowników czerwonego kamienia",
+    "description": "Poradnik do gry w minecraft",
+    "unitPrice": 25.99,
+    "unitWeight": 78.23,
+    "categoryId": 2
+  },
+  {
+    "name": "Fullcap",
+    "description": "Modna czapka Fullcap",
+    "unitPrice": 1.99,
+    "unitWeight": 50,
+    "categoryId": 3
+  },
+  {
+    "name": "Stół",
+    "description": "Stół do jadalni",
+    "unitPrice": 249.99,
+    "unitWeight": 10000.5,
+    "categoryId": 4
+  },
+  {
+    "name": "Furby",
+    "description": "Zabawka pluszak dla dzieci",
+    "unitPrice": 49.99,
+    "unitWeight": 100.16,
+    "categoryId": 5
+  }
+]
