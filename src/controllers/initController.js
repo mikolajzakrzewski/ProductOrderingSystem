@@ -2,7 +2,7 @@ const prisma = require('../config/database');
 const { StatusCodes } = require('http-status-codes');
 const initData = require('../data/initData.json');
 
-exports.init = async (req, res) => {
+exports.init = async (req, res, next) => {
     try {
         const products = await prisma.product.findMany();
         if (products.length > 0) {

@@ -141,3 +141,60 @@ exports.getOrdersByStatus = async (req, res, next) => {
     next(error);
   }
 };
+
+// Dodaj opinię do zamówienia
+exports.addOrderOpinion = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { rating, text } = req.body;
+
+    if (!rating || !text) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            error: 'Rating and text are required.',
+        });
+    }
+
+    if (rating < 1 || rating > 5) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            error: 'Rating must be an integer between 1 and 5.',
+        });
+    }
+
+    const order = await prisma.order.findUnique({
+      where: { id: parseInt(id) },
+      include: { status: true },
+    });
+
+    if (!order) {
+      return res.status(StatusCodes.NOT_FOUND).json({ error: 'Order not found.' });
+    }
+
+    if (order.status.name !== 'COMPLETED' && order.status.name !== 'CANCELED') {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        error: 'An opinion can only be added to completed or canceled orders.',
+      });
+    }
+
+    const previousReview = await prisma.review.findFirst({
+        where: { orderId: Number(id) },
+    });
+
+    if (previousReview) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            error: 'An opinion already exists for this order.',
+        });
+    }
+
+    const newReview = await prisma.review.create({
+        data: {
+            orderId: Number(id),
+            rating: rating,
+            text: text,
+        },
+    });
+
+    res.status(StatusCodes.CREATED).json(newReview);
+  } catch (error) {
+    next(error);
+  }
+};
