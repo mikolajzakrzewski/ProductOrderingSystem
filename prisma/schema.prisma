@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          Int         @id @default(autoincrement()) // Unique identifier
+  name        String      // Product name
+  description String?     // Product description (optional, can include HTML)
+  unitPrice   Float       // Unit price
+  unitWeight  Float       // Unit weight
+  categoryId  Int         // Foreign key to Category
+  category    Category    @relation(fields: [categoryId], references: [id]) // Relation to Category
+  orderItems  OrderItem[] // Relation to ordered items
+}
+
+model Category {
+  id       Int       @id @default(autoincrement()) // Unique identifier
+  name     String    @unique // Category name
+  products Product[] // Relation to products
+}
+
+model Order {
+  id           Int         @id @default(autoincrement()) // Unique identifier
+  approvalDate DateTime?   // Approval date (nullable)
+  statusId     Int         // Foreign key to OrderStatus
+  status       OrderStatus @relation(fields: [statusId], references: [id]) // Relation to order status
+  customerName String      // Customer name
+  email        String      // Customer email
+  phoneNumber  String      // Customer phone number
+  orderItems   OrderItem[] // Relation to ordered items
+}
+
+model OrderStatus {
+  id     Int     @id @default(autoincrement()) // Unique identifier
+  name   String   @unique // Order status name
+  orders Order[] // Relation to orders
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement()) // Unique identifier
+  orderId   Int     // Foreign key to Order
+  order     Order   @relation(fields: [orderId], references: [id]) // Relation to order
+  productId Int     // Foreign key to Product
+  product   Product @relation(fields: [productId], references: [id]) // Relation to product
+  quantity  Int     // Quantity of the product in the order
+}
