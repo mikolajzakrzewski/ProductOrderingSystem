@@ -18,8 +18,7 @@ exports.getProductById = async (req, res) => {
 exports.addProduct = async (req, res, next) => {
     try {
       const { name, description, unitPrice, unitWeight, categoryId } = req.body;
-  
-      // Walidacja
+
       if (!name || name.trim() === '') {
         return res.status(StatusCodes.BAD_REQUEST).json({
           error: 'Product name cannot be empty.',
@@ -100,7 +99,6 @@ exports.generateSeoDescription = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    // Pobranie danych produktu z bazy
     const product = await prisma.product.findUnique({
       where: { id: Number(id) },
       include: { category: true },
@@ -146,16 +144,14 @@ exports.generateSeoDescription = async (req, res, next) => {
 
     const seoDescription = data.choices[0].message.content.trim();
 
-    // Zapisanie opisu SEO w bazie
     await prisma.product.update({
       where: { id: Number(id) },
       data: { descriptionHTML: seoDescription },
     });
 
-    // Zwracanie opisu w formacie JSON
     res.json({ seoDescription });
   } catch (error) {
     console.error('Error generating SEO description:', error.message);
-    next(error); // Obsługa błędów przez middleware
+    next(error);
   }
 };

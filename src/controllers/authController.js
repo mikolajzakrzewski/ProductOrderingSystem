@@ -5,8 +5,6 @@ const prisma = require('../config/database');
 const SECRET_KEY = process.env.JWT_SECRET || 'your_jwt_secret_key';
 const TOKEN_EXPIRY = '1h'; // Ważność tokenu
 
-
-// Logowanie użytkownika
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -27,7 +25,6 @@ exports.login = async (req, res, next) => {
   }
 };
 
-// Odśwież token JWT
 exports.refreshToken = async (req, res, next) => {
   const { token } = req.body;
 

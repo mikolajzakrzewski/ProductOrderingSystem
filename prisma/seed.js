@@ -6,7 +6,7 @@ const seed = async () => {
   const statuses = ['UNCONFIRMED', 'CONFIRMED', 'CANCELED', 'COMPLETED'];
   const categories = ['Electronics', 'Books', 'Clothing', 'Furniture', 'Toys'];
 
-  // Dodaj statusy zamówień
+  // seed statusy zamówień
   for (const status of statuses) {
     await prisma.orderStatus.upsert({
       where: { name: status },
@@ -16,7 +16,7 @@ const seed = async () => {
   }
   console.log('Order statuses seeded.');
 
-  // Dodaj kategorie
+  // seed kategorie
   for (const category of categories) {
     await prisma.category.upsert({
       where: { name: category },
@@ -51,4 +51,4 @@ const seed = async () => {
   });
 };
 
-module.exports = seed; // Eksport funkcji seed
+module.exports = seed; 
