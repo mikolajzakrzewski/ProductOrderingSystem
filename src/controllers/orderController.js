@@ -4,7 +4,7 @@ const { StatusCodes } = require('http-status-codes');
 exports.getAllOrders = async (req, res, next) => {
   try {
     const orders = await prisma.order.findMany({
-      include: { status: true, orderItems: { include: { product: true } } },
+      include: { status: true, orderItems: true },
     });
     res.json(orders);
   } catch (error) {
@@ -28,9 +28,27 @@ exports.addOrder = async (req, res, next) => {
       });
     }
 
-    if (!items || items.length === 0 || items.some((item) => item.quantity <= 0)) {
+    if (!items || items.length === 0) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+            error: 'At least one item is required.',
+        });
+    }
+
+    if (items.some((item) => !item.productId || !item.quantity || !item.unitPrice)) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        error: 'All items must have a product ID, quantity, and unit price.',
+      });
+    }
+
+    if (items.some((item) => item.quantity <= 0)) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         error: 'Order items must have positive quantities.',
+      });
+    }
+
+    if (items.some((item) => item.unitPrice <= 0)) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        error: 'Order items must have positive prices.',
       });
     }
 
@@ -56,6 +74,7 @@ exports.addOrder = async (req, res, next) => {
           create: items.map((item) => ({
             productId: item.productId,
             quantity: item.quantity,
+            unitPrice: item.unitPrice,
           })),
         },
       },
@@ -147,6 +166,7 @@ exports.updateOrder = async (req, res, next) => {
           orderId: Number(id),
           productId: item.productId,
           quantity: item.quantity,
+          unitPrice: item.unitPrice,
         })),
       });
     }
