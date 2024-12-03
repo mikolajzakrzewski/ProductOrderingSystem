@@ -6,7 +6,7 @@ const seed = async () => {
   const statuses = ['UNCONFIRMED', 'CONFIRMED', 'CANCELED', 'COMPLETED'];
   const categories = ['Electronics', 'Books', 'Clothing', 'Furniture', 'Toys'];
 
-  // seed statusy zamówień
+  // Seed statusy zamówień
   for (const status of statuses) {
     await prisma.orderStatus.upsert({
       where: { name: status },
@@ -16,7 +16,7 @@ const seed = async () => {
   }
   console.log('Order statuses seeded.');
 
-  // seed kategorie
+  // Seed kategorie
   for (const category of categories) {
     await prisma.category.upsert({
       where: { name: category },
@@ -29,26 +29,41 @@ const seed = async () => {
   const hashedPasswordClient = await bcrypt.hash('klient', 10);
   const hashedPasswordWorker = await bcrypt.hash('pracownik', 10);
 
-  // Seed users
-  await prisma.user.upsert({
+  
+  const existingClient = await prisma.user.findUnique({
     where: { email: 'klient@gmail.com' },
-    update: {},
-    create: {
-      email: 'klien@gmail.com',
-      password: hashedPasswordClient,
-      role: 'KLIENT',
-    },
   });
 
-  await prisma.user.upsert({
+  if (!existingClient) {
+    await prisma.user.create({
+      data: {
+        email: 'klient@gmail.com',
+        password: hashedPasswordClient,
+        role: 'KLIENT',
+      },
+    });
+    console.log('Client user seeded.');
+  } else {
+    console.log('Client user already exists.');
+  }
+
+  
+  const existingWorker = await prisma.user.findUnique({
     where: { email: 'pracownik@gmail.com' },
-    update: {},
-    create: {
-      email: 'pracownik@gmail.com',
-      password: hashedPasswordWorker,
-      role: 'PRACOWNIK',
-    },
   });
+
+  if (!existingWorker) {
+    await prisma.user.create({
+      data: {
+        email: 'pracownik@gmail.com',
+        password: hashedPasswordWorker,
+        role: 'PRACOWNIK',
+      },
+    });
+    console.log('Worker user seeded.');
+  } else {
+    console.log('Worker user already exists.');
+  }
 };
 
-module.exports = seed; 
+module.exports = seed;
