@@ -15,6 +15,6 @@ app.use('/categories', categoryRoutes);
 app.use('/orders', orderRoutes);
 app.use('/status', statusRoutes);
 app.use('/init', initRoutes);
-app.use('/auth', authRoutes);
+app.use('', authRoutes);
 app.use(errorHandler);
 module.exports = app;

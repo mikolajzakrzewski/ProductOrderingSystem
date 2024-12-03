@@ -6,13 +6,14 @@ const {
   updateProduct,
   generateSeoDescription,
 } = require('../controllers/productController');
+const { authenticate, authorize } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
 router.get('/', getAllProducts);
 router.get('/:id', getProductById);
-router.post('/', addProduct);
-router.put('/:id', updateProduct);
-router.get('/:id/seo-description', generateSeoDescription);
+router.post('/', authenticate, authorize(['PRACOWNIK']), addProduct);
+router.put('/:id', authenticate, authorize(['PRACOWNIK']), updateProduct);
+router.get('/:id/seo-description', authenticate, authorize(['PRACOWNIK']), generateSeoDescription);
 
 module.exports = router;

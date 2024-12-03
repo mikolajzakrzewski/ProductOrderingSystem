@@ -1,7 +1,11 @@
+require('dotenv').config();
+
+
 const app = require('./app');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const PORT = process.env.PORT || 3000;
+
 
 // Funkcja do uruchomienia seeda
 const runSeed = async () => {

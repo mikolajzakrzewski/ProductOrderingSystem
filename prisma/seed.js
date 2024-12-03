@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcrypt');
 const prisma = new PrismaClient();
 
 const seed = async () => {
@@ -24,6 +25,30 @@ const seed = async () => {
     });
   }
   console.log('Categories seeded.');
+
+  const hashedPasswordClient = await bcrypt.hash('klient', 10);
+  const hashedPasswordWorker = await bcrypt.hash('pracownik', 10);
+
+  // Seed users
+  await prisma.user.upsert({
+    where: { email: 'klient@gmail.com' },
+    update: {},
+    create: {
+      email: 'klien@gmail.com',
+      password: hashedPasswordClient,
+      role: 'KLIENT',
+    },
+  });
+
+  await prisma.user.upsert({
+    where: { email: 'pracownik@gmail.com' },
+    update: {},
+    create: {
+      email: 'pracownik@gmail.com',
+      password: hashedPasswordWorker,
+      role: 'PRACOWNIK',
+    },
+  });
 };
 
 module.exports = seed; // Eksport funkcji seed

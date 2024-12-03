@@ -5,26 +5,6 @@ const prisma = require('../config/database');
 const SECRET_KEY = process.env.JWT_SECRET || 'your_jwt_secret_key';
 const TOKEN_EXPIRY = '1h'; // Ważność tokenu
 
-// Rejestracja użytkownika
-exports.register = async (req, res, next) => {
-  const { email, password, role } = req.body;
-
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = await prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        role,
-      },
-    });
-
-    res.status(201).json({ message: 'User registered successfully', user });
-  } catch (error) {
-    next(error);
-  }
-};
 
 // Logowanie użytkownika
 exports.login = async (req, res, next) => {

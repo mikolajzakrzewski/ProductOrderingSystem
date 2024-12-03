@@ -17,6 +17,7 @@ model Product {
   id          Int         @id @default(autoincrement()) // Unique identifier
   name        String // Product name
   description String? // Product description (optional, can include HTML)
+  descriptionHTML String?
   unitPrice   Float // Unit price
   unitWeight  Float // Unit weight
   categoryId  Int // Foreign key to Category
