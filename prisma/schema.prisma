@@ -64,3 +64,11 @@ model Review {
   rating  Int // Rating of the product
   text    String // Review text
 }
+
+model User {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  password String
+  role     String   @default("KLIENT") // Role: "KLIENT", "PRACOWNIK"
+  createdAt DateTime @default(now())
+}

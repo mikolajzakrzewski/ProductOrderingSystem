@@ -1,5 +1,6 @@
 const prisma = require('../config/database');
 const { StatusCodes } = require('http-status-codes');
+const openai = require('../config/openai');
 
 exports.getAllProducts = async (req, res) => {
   const products = await prisma.product.findMany();
@@ -94,4 +95,44 @@ exports.updateProduct = async (req, res, next) => {
       }
       next(error);
     }
-  };
+};
+
+exports.generateSeoDescription = async (req, res, next) => {
+    try {
+      const { id } = req.params;
+  
+      // Pobranie danych produktu z bazy danych
+      const product = await prisma.product.findUnique({
+        where: { id: parseInt(id) },
+        include: { category: true }, // Pobierz również kategorię produktu
+      });
+  
+      if (!product) {
+        return res.status(404).json({ error: 'Product not found' });
+      }
+  
+      // Przygotowanie prompta dla modelu OpenAI
+      const prompt = `
+        Generate a search engine optimized (SEO) HTML description for a product with the following details:
+        - Name: ${product.name}
+        - Description: ${product.description}
+        - Price: ${product.unitPrice}
+        - Category: ${product.category.name}
+        Ensure the description uses proper HTML tags and includes keywords relevant to the product.
+      `;
+  
+      // Wywołanie OpenAI
+      const response = await openai.createCompletion({
+        model: 'text-davinci-003', // Możesz użyć odpowiedniego modelu
+        prompt,
+        max_tokens: 300,
+      });
+  
+      const seoDescription = response.data.choices[0].text.trim();
+  
+      // Zwrócenie opisu SEO
+      res.json({ seoDescription });
+    } catch (error) {
+      next(error);
+    }
+};
