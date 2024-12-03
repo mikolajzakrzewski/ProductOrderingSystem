@@ -10,10 +10,10 @@ const { authenticate, authorize } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-router.get('/', authenticate, getAllOrders); // Pobierz wszystkie zamówienia
-router.post('/', authenticate, addOrder); // Dodaj nowe zamówienie
-router.patch('/:id', authenticate, authorize(['PRACOWNIK']), updateOrder); // Zmień status zamówienia
-router.get('/status/:id', authenticate, getOrdersByStatus); // Pobierz zamówienia z określonym stanem
-router.post('/:id/opinions', authenticate, addOrderOpinion); // Dodaj opinię do zamówienia
+router.get('/', authenticate, getAllOrders);
+router.post('/', authenticate, addOrder);
+router.patch('/:id', authenticate, authorize(['PRACOWNIK']), updateOrder);
+router.get('/status/:id', authenticate, getOrdersByStatus);
+router.post('/:id/opinions', authenticate, addOrderOpinion);
 
 module.exports = router;

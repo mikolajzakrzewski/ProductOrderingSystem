@@ -1,7 +1,6 @@
 const prisma = require('../config/database');
 const { StatusCodes } = require('http-status-codes');
 
-// Pobierz wszystkie zamówienia
 exports.getAllOrders = async (req, res, next) => {
   try {
     const orders = await prisma.order.findMany({
@@ -13,12 +12,10 @@ exports.getAllOrders = async (req, res, next) => {
   }
 };
 
-// Dodaj nowe zamówienie
 exports.addOrder = async (req, res, next) => {
   try {
     const { approvalDate, statusId = 1, customerName, email, phoneNumber, items } = req.body;
 
-    // Walidacja użytkownika
     if (!customerName || !email || !phoneNumber) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         error: 'Customer name, email, and phone number are required.',
@@ -31,7 +28,6 @@ exports.addOrder = async (req, res, next) => {
       });
     }
 
-    // Walidacja towarów
     if (!items || items.length === 0 || items.some((item) => item.quantity <= 0)) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         error: 'Order items must have positive quantities.',
@@ -71,13 +67,11 @@ exports.addOrder = async (req, res, next) => {
   }
 };
 
-// Zmień status zamówienia
 exports.updateOrder = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { statusId, customerName, email, phoneNumber, approvalDate, items } = req.body;
 
-    // Pobranie zamówienia
     const order = await prisma.order.findUnique({
       where: { id: Number(id) },
       include: { status: true },
@@ -87,16 +81,13 @@ exports.updateOrder = async (req, res, next) => {
       return res.status(StatusCodes.NOT_FOUND).json({ error: 'Order not found.' });
     }
 
-    // Jeśli `statusId` jest przekazane, wykonaj dodatkowe walidacje dla statusu
     if (statusId) {
-      // Nie można zmienić statusu zamówienia anulowanego
       if (order.status.name === 'CANCELED') {
         return res.status(StatusCodes.BAD_REQUEST).json({
           error: 'Cannot modify a canceled order.',
         });
       }
 
-      // Walidacja przejścia statusów
       const validTransitions = {
         UNCONFIRMED: ['CONFIRMED', 'CANCELED'],
         CONFIRMED: ['CANCELED', 'COMPLETED'],
@@ -119,7 +110,6 @@ exports.updateOrder = async (req, res, next) => {
       }
     }
 
-    // Jeśli są przedmioty do aktualizacji, wykonaj walidację `items`
     if (items && items.length > 0) {
       if (items.some((item) => item.quantity <= 0)) {
         return res.status(StatusCodes.BAD_REQUEST).json({
@@ -139,7 +129,6 @@ exports.updateOrder = async (req, res, next) => {
       }
     }
 
-    // Aktualizacja zamówienia
     const updatedOrder = await prisma.order.update({
       where: { id: Number(id) },
       data: {
@@ -151,9 +140,7 @@ exports.updateOrder = async (req, res, next) => {
       },
     });
 
-    // Jeśli są przedmioty do aktualizacji, zaktualizuj `orderItems`
     if (items && items.length > 0) {
-      // Usuń istniejące pozycje zamówienia i dodaj nowe
       await prisma.orderItem.deleteMany({ where: { orderId: Number(id) } });
       await prisma.orderItem.createMany({
         data: items.map((item) => ({
@@ -170,8 +157,6 @@ exports.updateOrder = async (req, res, next) => {
   }
 };
 
-
-// Pobierz zamówienia z określonym stanem
 exports.getOrdersByStatus = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -187,7 +172,6 @@ exports.getOrdersByStatus = async (req, res, next) => {
   }
 };
 
-// Dodaj opinię do zamówienia
 exports.addOrderOpinion = async (req, res, next) => {
   try {
     const { id } = req.params;
