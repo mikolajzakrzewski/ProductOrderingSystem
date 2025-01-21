@@ -247,3 +247,55 @@ exports.addOrderOpinion = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getAllOpinions = async (req, res, next) => {
+  try {
+    const reviews = await prisma.review.findMany({
+      include: { order: { include: { status: true, orderItems: true } } },
+    });
+    res.json(reviews);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getOrdersByClientId = async (req, res, next) => {
+  const { id } = req.params; // Odbieramy parametr `id` z URL
+  try {
+    if (!id) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        error: 'Id parameter is required.',
+      });
+    }
+
+    const parsedId = parseInt(id, 10);
+    if (isNaN(parsedId)) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        error: 'Id parameter must be a valid number.',
+      });
+    }
+
+    // Wyszukiwanie użytkownika po `id`
+    const user = await prisma.user.findUnique({
+      where: { id: parsedId },
+    });
+
+    if (!user) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        error: 'User not found.',
+      });
+    }
+
+    // Pobieranie zamówień dla użytkownika
+    const orders = await prisma.order.findMany({
+      where: { email: user.email }, // Użycie emaila znalezionego użytkownika
+      include: { status: true, orderItems: true },
+    });
+
+
+    res.json(orders); // Zwróć znalezione zamówienia
+  } catch (error) {
+    console.error('Błąd w getOrdersByClientId:', error);
+    next(error); // Przekazanie błędu do middleware obsługi błędów
+  }
+};

@@ -65,6 +65,7 @@ model Review {
   order   Order  @relation(fields: [orderId], references: [id])
   rating  Int
   text    String
+  createdAt DateTime @default(now())
 }
 
 model User {
