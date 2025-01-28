@@ -7,7 +7,6 @@ const prisma = new PrismaClient();
 const PORT = process.env.PORT || 3000;
 
 
-// Funkcja do uruchomienia seeda
 const runSeed = async () => {
   const seed = require('../prisma/seed'); 
   await seed(); 

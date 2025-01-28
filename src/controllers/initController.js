@@ -1,7 +1,7 @@
 const prisma = require('../config/database');
 const { StatusCodes } = require('http-status-codes');
 const initData = require('../data/initData.json');
-const { addProduct } = require('./productController'); // Importujemy metodę addProduct
+const { addProduct } = require('./productController');
 
 exports.init = async (req, res, next) => {
   try {
@@ -12,7 +12,6 @@ exports.init = async (req, res, next) => {
       });
     } else {
       for (const item of initData) {
-        // Wywołujemy metodę addProduct
         await addProduct(
           {
             body: {
@@ -23,7 +22,7 @@ exports.init = async (req, res, next) => {
               categoryId: item.categoryId,
             },
           },
-          { status: () => ({ json: () => {} }) }, // Mock obiektu `res`
+          { status: () => ({ json: () => {} }) },
           next
         );
       }
@@ -50,7 +49,6 @@ exports.initCustom = async (req, res, next) => {
       });
     } else {
       for (const item of products) {
-        // Wywołujemy metodę addProduct
         await addProduct(
           {
             body: {
@@ -61,7 +59,7 @@ exports.initCustom = async (req, res, next) => {
               categoryId: item.categoryId,
             },
           },
-          { status: () => ({ json: () => {} }) }, // Mock obiektu `res`
+          { status: () => ({ json: () => {} }) },
           next
         );
       }

@@ -57,8 +57,8 @@ exports.addProduct = async (req, res, next) => {
           },
           body: JSON.stringify({
             prompt: imagePrompt,
-            n: 1, // Liczba obrazów
-            size: '512x512', // Rozmiar obrazu
+            n: 1,
+            size: '512x512',
           }),
         });
   
@@ -69,7 +69,7 @@ exports.addProduct = async (req, res, next) => {
           throw new Error(`OpenAI API returned an error: ${data.error?.message || 'Unknown error'}`);
         }
   
-        imageUrl = data.data[0].url; // URL wygenerowanego obrazu
+        imageUrl = data.data[0].url;
       } catch (error) {
         console.error('Error generating image:', error.message);
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

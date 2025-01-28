@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const prisma = require('../config/database');
 
 const SECRET_KEY = process.env.JWT_SECRET || 'your_jwt_secret_key';
-const TOKEN_EXPIRY = '1h'; // Ważność tokenu
+const TOKEN_EXPIRY = '1h';
 const SALT_ROUNDS = 10; 
 
 exports.login = async (req, res, next) => {
@@ -62,22 +62,19 @@ exports.register = async (req, res, next) => {
       return res.status(400).json({ error: 'Password must be at least 6 characters long' });
     }
 
-    // Sprawdź, czy użytkownik już istnieje
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ error: 'Email is already in use' });
     }
 
-    // Hashowanie hasła
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
-    // Tworzenie nowego użytkownika
     const newUser = await prisma.user.create({
       data: {
         email,
-        password: hashedPassword, // Zapis hashowanego hasła
-        role: 'KLIENT', // Domyślna rola
-        createdAt: new Date(), // Aktualna data
+        password: hashedPassword,
+        role: 'KLIENT',
+        createdAt: new Date(),
       },
     });
 

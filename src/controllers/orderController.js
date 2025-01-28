@@ -260,7 +260,7 @@ exports.getAllOpinions = async (req, res, next) => {
 };
 
 exports.getOrdersByClientId = async (req, res, next) => {
-  const { id } = req.params; // Odbieramy parametr `id` z URL
+  const { id } = req.params;
   try {
     if (!id) {
       return res.status(StatusCodes.BAD_REQUEST).json({
@@ -275,7 +275,6 @@ exports.getOrdersByClientId = async (req, res, next) => {
       });
     }
 
-    // Wyszukiwanie użytkownika po `id`
     const user = await prisma.user.findUnique({
       where: { id: parsedId },
     });
@@ -286,16 +285,15 @@ exports.getOrdersByClientId = async (req, res, next) => {
       });
     }
 
-    // Pobieranie zamówień dla użytkownika
     const orders = await prisma.order.findMany({
-      where: { email: user.email }, // Użycie emaila znalezionego użytkownika
+      where: { email: user.email },
       include: { status: true, orderItems: true },
     });
 
 
-    res.json(orders); // Zwróć znalezione zamówienia
+    res.json(orders);
   } catch (error) {
     console.error('Błąd w getOrdersByClientId:', error);
-    next(error); // Przekazanie błędu do middleware obsługi błędów
+    next(error);
   }
 };

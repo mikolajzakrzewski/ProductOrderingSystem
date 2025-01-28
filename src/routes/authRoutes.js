@@ -4,8 +4,7 @@ const { authenticate, authorize } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-// Endpointy
-router.post('/register', register); // Dodany endpoint
+router.post('/register', register);
 router.post('/login', login);
 router.post('/refresh-token', authenticate, refreshToken);
 
