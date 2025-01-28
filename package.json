@@ -18,7 +18,7 @@
     "express": "^4.21.1",
     "http-status-codes": "^2.3.0",
     "jsonwebtoken": "^9.0.0",
-    "openai": "^4.74.0"
+    "openai": "^4.80.1"
   },
   "devDependencies": {
     "prisma": "^6.0.1"

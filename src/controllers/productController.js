@@ -1,6 +1,8 @@
 const prisma = require('../config/database');
 const { StatusCodes } = require('http-status-codes');
 const axios = require('axios');
+const { Configuration, OpenAIApi } = require('openai');
+
 
 exports.getAllProducts = async (req, res) => {
   const products = await prisma.product.findMany();
@@ -42,9 +44,41 @@ exports.addProduct = async (req, res, next) => {
           error: 'Product unit weight must be greater then 0',
         });
       }
+
+      const imagePrompt = `A high-quality studio photo of a ${name}, designed for an e-commerce website. The product is placed on a clean white background, well-lit, with clear details. ${description}.`;
+      let imageUrl = null;
+  
+      try {
+        const response = await fetch('https://api.openai.com/v1/images/generations', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            prompt: imagePrompt,
+            n: 1, // Liczba obrazów
+            size: '512x512', // Rozmiar obrazu
+          }),
+        });
+  
+        const data = await response.json();
+  
+        if (!response.ok || !data.data || !data.data[0]?.url) {
+          console.error('OpenAI API Error:', data);
+          throw new Error(`OpenAI API returned an error: ${data.error?.message || 'Unknown error'}`);
+        }
+  
+        imageUrl = data.data[0].url; // URL wygenerowanego obrazu
+      } catch (error) {
+        console.error('Error generating image:', error.message);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+          error: 'Failed to generate product image.',
+        });
+      }
   
       const newProduct = await prisma.product.create({
-        data: { name, description, unitPrice, unitWeight, categoryId },
+        data: { name, description, unitPrice, unitWeight, categoryId, imageUrl },
       });
       res.status(StatusCodes.CREATED).json(newProduct);
     } catch (error) {
@@ -121,7 +155,7 @@ exports.generateSeoDescription = async (req, res, next) => {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY_1}`,
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({

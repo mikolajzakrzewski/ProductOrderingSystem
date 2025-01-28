@@ -1,37 +1,37 @@
 [
   {
-    "name": "Komputer gamingowy",
-    "description": "Komputer do gier, bardzo mocny i wydajny",
-    "unitPrice": 19.99,
-    "unitWeight": 15.5,
+    "name": "Playstation 5",
+    "description": "High-end gaming console",
+    "unitPrice": 1499.99,
+    "unitWeight": 8.5,
     "categoryId": 1
   },
   {
-    "name": "Poradnik użytkowników czerwonego kamienia",
-    "description": "Poradnik do gry w minecraft",
-    "unitPrice": 25.99,
-    "unitWeight": 78.23,
+    "name": "Porshe 911 GT2-RS",
+    "description": "High-performance sports car",
+    "unitPrice": 19.99,
+    "unitWeight": 0.5,
     "categoryId": 2
   },
   {
-    "name": "Fullcap",
-    "description": "Modna czapka Fullcap",
-    "unitPrice": 1.99,
-    "unitWeight": 50,
+    "name": "Algorythm Basics",
+    "description": "Algorythm Basics book for beginners",
+    "unitPrice": 14.99,
+    "unitWeight": 0.3,
     "categoryId": 3
   },
   {
-    "name": "Stół",
-    "description": "Stół do jadalni",
-    "unitPrice": 249.99,
-    "unitWeight": 10000.5,
+    "name": "Spoon",
+    "description": "Special golden spoon",
+    "unitPrice": 499.99,
+    "unitWeight": 50.0,
     "categoryId": 4
   },
   {
-    "name": "Furby",
-    "description": "Zabawka pluszak dla dzieci",
-    "unitPrice": 49.99,
-    "unitWeight": 100.16,
+    "name": "Stylish T-shirt",
+    "description": "high-quality cotton t-shirt",
+    "unitPrice": 29.99,
+    "unitWeight": 0.8,
     "categoryId": 5
   }
 ]
